@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>แดชบอร์ดกำไรขาดทุน | สิงหาคม 2569</title>
+<style>
+  :root { --ink:#172034; --muted:#64748b; --paper:#f6f8fc; --panel:#fff; --line:#e5eaf3; --blue:#2764f6; --purple:#7655f5; --teal:#00a99d; --green:#12a36d; --red:#ec5564; --amber:#f6a63b; --navy:#15223d; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:Inter,"Noto Sans Thai","Leelawadee UI",system-ui,sans-serif; color:var(--ink); background:var(--paper); }
+  .shell { max-width:1440px; margin:auto; padding:28px clamp(16px,3.5vw,54px) 48px; }
+  .hero { background:linear-gradient(128deg,#15223d 0%,#263d75 53%,#5b42ad 100%); color:white; border-radius:24px; padding:30px clamp(22px,4vw,46px); position:relative; overflow:hidden; }
+  .hero:after { content:""; position:absolute; width:360px; height:360px; border-radius:50%; right:-110px; top:-160px; background:radial-gradient(circle,#80e0de55 0 33%,transparent 34% 48%,#a58cf433 49% 62%,transparent 63%); }
+  .eyebrow { color:#aee8e5; font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+  h1 { margin:7px 0 5px; font-size:clamp(27px,4vw,43px); line-height:1.2; letter-spacing:-.03em; }
+  .hero p { margin:0; color:#d4ddf2; font-size:16px; }
+  .source { display:inline-flex; margin-top:20px; padding:7px 11px; background:#ffffff1b; border:1px solid #ffffff26; border-radius:99px; font-size:13px; color:#e9edff; }
+  .importer { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin-top:16px; position:relative; z-index:1; }
+  .import-button { display:inline-flex; align-items:center; padding:8px 12px; background:#fff; color:#24355d; border-radius:9px; font-size:13px; font-weight:700; cursor:pointer; }
+  .import-button input { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+  .import-status { color:#dbe7ff; font-size:12px; }
+  .filters { display:flex; flex-wrap:wrap; gap:9px; margin:24px 0 17px; }
+  button { font:inherit; }
+  .filter { color:#41516c; background:#fff; border:1px solid var(--line); padding:9px 14px; border-radius:99px; cursor:pointer; transition:.2s; }
+  .filter:hover,.filter.active { border-color:var(--blue); color:#fff; background:var(--blue); box-shadow:0 7px 16px #2764f633; }
+  .kpis { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+  .kpi,.card { background:var(--panel); border:1px solid var(--line); border-radius:18px; box-shadow:0 8px 24px #203b692f; }
+  .kpi { padding:18px 19px; min-height:120px; }
+  .kpi label { display:block; color:var(--muted); font-size:13px; margin-bottom:10px; }
+  .kpi strong { font-size:clamp(20px,2.3vw,31px); letter-spacing:-.04em; }
+  .kpi .note { display:block; margin-top:7px; font-size:12px; color:var(--muted); }
+  .up { color:var(--green); } .down { color:var(--red); }
+  .layout { display:grid; grid-template-columns:1.35fr .85fr; gap:18px; margin-top:18px; }
+  .card { padding:22px; min-width:0; }
+  .card h2 { margin:0; font-size:18px; letter-spacing:-.02em; }
+  .sub { margin:4px 0 17px; font-size:13px; color:var(--muted); }
+  .chart-wrap { position:relative; height:305px; } canvas { width:100%; height:100%; display:block; }
+  .tooltip { position:absolute; display:none; pointer-events:none; background:#172034; color:#fff; border-radius:10px; padding:9px 11px; font-size:12px; line-height:1.55; box-shadow:0 10px 25px #11182755; white-space:nowrap; }
+  .legend { display:flex; gap:16px; flex-wrap:wrap; margin-top:9px; font-size:12px; color:var(--muted); }
+  .legend i { width:9px; height:9px; display:inline-block; border-radius:50%; margin-right:5px; }
+  .summary-table { width:100%; border-collapse:collapse; }
+  .summary-table th { padding:0 0 10px; border-bottom:1px solid var(--line); color:var(--muted); text-align:right; font-size:11px; font-weight:600; }
+  .summary-table th:first-child,.summary-table td:first-child { text-align:left; }
+  .summary-table td { padding:13px 0; border-bottom:1px solid #eef1f6; text-align:right; font-size:13px; white-space:nowrap; }
+  .summary-table tbody tr { cursor:pointer; } .summary-table tbody tr:hover { background:#f7f9ff; }
+  .summary-table tbody tr:last-child td { border-bottom:0; }
+  .company-name { font-weight:600; white-space:normal!important; }
+  .net-tag { display:inline-block; border-radius:99px; padding:4px 8px; font-size:11px; font-weight:700; } .net-tag.up { background:#e6f8f0; } .net-tag.down { background:#ffebee; }
+  .profit-bars { display:grid; gap:16px; margin-top:24px; }
+  .profit-row { width:100%; border:0; background:transparent; padding:0; display:grid; grid-template-columns:42px minmax(0,1fr) 96px; gap:10px; align-items:center; text-align:left; cursor:pointer; }
+  .profit-code { font-weight:700; color:var(--ink); }
+  .net-track { height:26px; position:relative; background:linear-gradient(90deg,#fff1f2 0 49.5%,#eaf9f4 50.5% 100%); border-radius:7px; overflow:hidden; }
+  .net-zero { position:absolute; left:50%; top:0; bottom:0; width:1px; background:#cbd5e1; }
+  .net-bar { position:absolute; top:5px; bottom:5px; border-radius:4px; transition:width .35s ease; }
+  .net-bar.up { left:50%; background:linear-gradient(90deg,#0ca678,#4dd4ab); }
+  .net-bar.down { right:50%; background:linear-gradient(90deg,#ff8a98,#ec5564); }
+  .net-value { font-size:12px; font-weight:700; text-align:right; }
+  .profit-row:hover .profit-code { color:var(--blue); }
+  .daily-mini { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; margin-top:24px; padding-top:17px; border-top:1px solid var(--line); }
+  .daily-mini-item { padding:10px; background:#f8faff; border-radius:11px; }
+  .daily-mini-item b { display:block; color:var(--muted); font-size:11px; font-weight:500; }
+  .daily-mini-item span { display:block; margin-top:4px; font-size:13px; font-weight:700; line-height:1.45; }
+  .lower { display:grid; grid-template-columns:.9fr 1.1fr; gap:18px; margin-top:18px; }
+  .bar-list { display:grid; gap:14px; } .bar-top { display:flex; justify-content:space-between; gap:12px; font-size:13px; } .bar-top span:last-child { font-weight:600; white-space:nowrap; }
+  .bar-track { height:8px; margin-top:7px; border-radius:99px; background:#edf0f6; overflow:hidden; } .bar { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--purple),#a68bff); }
+  .highlights { display:grid; gap:11px; } .highlight { display:grid; grid-template-columns:39px 1fr; align-items:center; gap:12px; padding:12px; background:#f8faff; border-radius:13px; } .badge { width:39px; height:39px; border-radius:12px; display:grid; place-items:center; color:white; font-weight:800; font-size:13px; } .badge.blue { background:var(--blue); } .badge.purple { background:var(--purple); } .badge.amber { background:var(--amber); }
+  .highlight b { display:block; font-size:13px; } .highlight span { display:block; color:var(--muted); font-size:12px; margin-top:2px; }
+  .highlight.recommend { grid-template-columns:39px 1fr; background:#f4f1ff; }
+  .footer { margin:18px 4px 0; color:var(--muted); font-size:12px; }
+  @media(max-width:900px) { .kpis { grid-template-columns:repeat(2,1fr); } .layout,.lower { grid-template-columns:1fr; } }
+  @media(max-width:560px) { .shell { padding:15px 12px 30px; } .hero { border-radius:18px; } .card { padding:17px; } .summary-table th:nth-child(3),.summary-table td:nth-child(3) { display:none; } .chart-wrap { height:255px; } .daily-mini { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<main class="shell">
+  <section class="hero">
+    <div class="eyebrow">Finance overview</div>
+    <h1>แดชบอร์ดกำไร / ขาดทุน</h1>
+    <p id="periodHeadline">สรุปผลประกอบการรายบริษัท ประจำเดือนสิงหาคม 2569</p>
+    <span class="source" id="sourceInfo">ข้อมูลจากรายรับ–รายจ่ายรายวัน · 4 บริษัท</span>
+    <div class="importer"><label class="import-button">นำเข้าไฟล์เดือนใหม่ (.xlsx)<input id="importFile" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></label><span class="import-status" id="importStatus">ใช้ไฟล์ Excel รูปแบบเดียวกับรายงานเดิม</span></div>
+  </section>
+  <nav class="filters" aria-label="เลือกบริษัท" id="filters"></nav>
+  <section class="kpis" aria-label="ตัวชี้วัดสำคัญ">
+    <article class="kpi"><label>รายรับรวม</label><strong id="revenue">–</strong><span class="note" id="revenueNote"></span></article>
+    <article class="kpi"><label>ค่าใช้จ่ายรวม</label><strong id="expense">–</strong><span class="note" id="expenseNote"></span></article>
+    <article class="kpi"><label>กำไร / ขาดทุนสุทธิ</label><strong id="net">–</strong><span class="note" id="netNote"></span></article>
+    <article class="kpi"><label>อัตรากำไรสุทธิ</label><strong id="margin">–</strong><span class="note">กำไรสุทธิ ÷ รายรับ</span></article>
+  </section>
+  <section class="layout">
+    <article class="card">
+      <h2>รายรับ เทียบ ค่าใช้จ่ายรายวัน</h2>
+      <p class="sub" id="trendSub">คลิกชื่อบริษัทเพื่อเปลี่ยนรายละเอียด</p>
+      <div class="chart-wrap"><canvas id="trend" aria-label="กราฟรายรับและค่าใช้จ่ายรายวัน"></canvas><div class="tooltip" id="tooltip"></div></div>
+      <div class="legend"><span><i style="background:#2764f6"></i>รายรับ</span><span><i style="background:#ec5564"></i>ค่าใช้จ่าย</span><span><i style="background:#12a36d"></i>กำไรสุทธิรายวัน</span></div>
+    </article>
+    <article class="card">
+      <h2 id="profitTitle">กำไร / ขาดทุนสุทธิรายบริษัท</h2>
+      <p class="sub" id="profitSub">แท่งสีเขียวคือกำไร สีแดงคือขาดทุน · คลิกเพื่อดูรายละเอียดบริษัท</p>
+      <div class="profit-bars" id="profitBars" aria-label="กราฟกำไรขาดทุนสุทธิรายบริษัท"></div>
+      <div class="daily-mini" id="dailyMini" aria-label="สรุปวิเคราะห์รายวัน"></div>
+    </article>
+  </section>
+  <section class="lower">
+    <article class="card"><h2>ค่าใช้จ่ายสูงสุด</h2><p class="sub" id="categorySub">จัดอันดับตามบริษัทที่เลือก</p><div id="bars" class="bar-list"></div></article>
+    <article class="card"><h2 id="dailyTitle">วิเคราะห์รายวัน</h2><p class="sub" id="dailySub">สรุปจากยอดเดือนสิงหาคม 2569</p><div id="highlights" class="highlights"></div></article>
+  </section>
+  <p class="footer">หน่วย: บาท · ยอดสุทธิ = รายรับ − ค่าใช้จ่าย · วางเมาส์บนกราฟเพื่อดูตัวเลขรายวัน</p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script>
+let companies = [{"id":"TSP","name":"บริษัท ธนาชิปปิ้ง จำกัด","revenue":246021.5,"expense":356934.31,"net":-110912.81,"daily":[{"day":1,"revenue":0.0,"expense":135461.0,"net":-135461.0},{"day":2,"revenue":0.0,"expense":0.0,"net":0.0},{"day":3,"revenue":0.0,"expense":18831.86,"net":-18831.86},{"day":4,"revenue":0.0,"expense":1404.0,"net":-1404.0},{"day":5,"revenue":0.0,"expense":53826.0,"net":-53826.0},{"day":6,"revenue":0.0,"expense":10696.18,"net":-10696.18},{"day":7,"revenue":0.0,"expense":0.0,"net":0.0},{"day":8,"revenue":0.0,"expense":0.0,"net":0.0},{"day":9,"revenue":0.0,"expense":0.0,"net":0.0},{"day":10,"revenue":0.0,"expense":20313.63,"net":-20313.63},{"day":11,"revenue":0.0,"expense":0.0,"net":0.0},{"day":12,"revenue":0.0,"expense":0.0,"net":0.0},{"day":13,"revenue":0.0,"expense":0.0,"net":0.0},{"day":14,"revenue":0.0,"expense":12766.0,"net":-12766.0},{"day":15,"revenue":0.0,"expense":12018.24,"net":-12018.24},{"day":16,"revenue":0.0,"expense":0.0,"net":0.0},{"day":17,"revenue":0.0,"expense":11922.9,"net":-11922.9},{"day":18,"revenue":0.0,"expense":0.0,"net":0.0},{"day":19,"revenue":0.0,"expense":0.0,"net":0.0},{"day":20,"revenue":0.0,"expense":2550.0,"net":-2550.0},{"day":21,"revenue":0.0,"expense":19976.93,"net":-19976.93},{"day":22,"revenue":0.0,"expense":10960.0,"net":-10960.0},{"day":23,"revenue":0.0,"expense":0.0,"net":0.0},{"day":24,"revenue":1700.0,"expense":1700.0,"net":0.0},{"day":25,"revenue":0.0,"expense":25977.49,"net":-25977.49},{"day":26,"revenue":0.0,"expense":5066.32,"net":-5066.32},{"day":27,"revenue":0.0,"expense":1068.76,"net":-1068.76},{"day":28,"revenue":0.0,"expense":0.0,"net":0.0},{"day":29,"revenue":0.0,"expense":0.0,"net":0.0},{"day":30,"revenue":0.0,"expense":0.0,"net":0.0},{"day":31,"revenue":244321.5,"expense":12395.0,"net":231926.5}],"categories":[{"name":"เงินเดือน 7-69","value":135461.0},{"name":"เงินสดย่อย","value":84801.86},{"name":"สินเชื่อ","value":38361.49},{"name":"ค่าบริหารจัดการ","value":22209.0},{"name":"เค้าน์เตอร์","value":19662.24},{"name":"ภงด.1-3-53-30-50","value":17184.9},{"name":"ปกส./กยศ.","value":15744.0},{"name":"ค่าเช่า","value":5000.0},{"name":"ค่าทำบัญชี","value":3529.93},{"name":"ค่าพิธีการ","value":3104.0},{"name":"ริโก้","value":2550.0},{"name":"อุปกรณ์ สนง.","value":2293.0},{"name":"ไฟ/เน็ต/น้ำ","value":2185.95},{"name":"คืนลูกค้า","value":1700.0},{"name":"มูลไก่","value":1600.0},{"name":"ภาษีทิดิน","value":1068.76},{"name":"ค่าโทรศัพท์","value":478.18}]},{"id":"TT","name":"บริษัท ทีที อินเตอร์เทรดดิ้ง จำกัด","revenue":2668646.33,"expense":1971908.93,"net":696737.4,"daily":[{"day":1,"revenue":0.0,"expense":105425.0,"net":-105425.0},{"day":2,"revenue":0.0,"expense":0.0,"net":0.0},{"day":3,"revenue":0.0,"expense":274548.89,"net":-274548.89},{"day":4,"revenue":0.0,"expense":71269.1,"net":-71269.1},{"day":5,"revenue":0.0,"expense":128180.0,"net":-128180.0},{"day":6,"revenue":0.0,"expense":3000.0,"net":-3000.0},{"day":7,"revenue":0.0,"expense":51436.0,"net":-51436.0},{"day":8,"revenue":0.0,"expense":65229.0,"net":-65229.0},{"day":9,"revenue":0.0,"expense":0.0,"net":0.0},{"day":10,"revenue":0.0,"expense":56351.0,"net":-56351.0},{"day":11,"revenue":0.0,"expense":10981.62,"net":-10981.62},{"day":12,"revenue":0.0,"expense":5709.99,"net":-5709.99},{"day":13,"revenue":0.0,"expense":48007.02,"net":-48007.02},{"day":14,"revenue":0.0,"expense":66592.73,"net":-66592.73},{"day":15,"revenue":2668646.33,"expense":79385.28,"net":2589261.05},{"day":16,"revenue":0.0,"expense":0.0,"net":0.0},{"day":17,"revenue":0.0,"expense":185329.76,"net":-185329.76},{"day":18,"revenue":0.0,"expense":7964.0,"net":-7964.0},{"day":19,"revenue":0.0,"expense":126892.0,"net":-126892.0},{"day":20,"revenue":0.0,"expense":4040.0,"net":-4040.0},{"day":21,"revenue":0.0,"expense":4845.0,"net":-4845.0},{"day":22,"revenue":0.0,"expense":115123.0,"net":-115123.0},{"day":23,"revenue":0.0,"expense":0.0,"net":0.0},{"day":24,"revenue":0.0,"expense":20113.0,"net":-20113.0},{"day":25,"revenue":0.0,"expense":235102.33,"net":-235102.33},{"day":26,"revenue":0.0,"expense":17565.0,"net":-17565.0},{"day":27,"revenue":0.0,"expense":38860.0,"net":-38860.0},{"day":28,"revenue":0.0,"expense":24345.23,"net":-24345.23},{"day":29,"revenue":0.0,"expense":114248.24,"net":-114248.24},{"day":30,"revenue":0.0,"expense":0.0,"net":0.0},{"day":31,"revenue":0.0,"expense":111365.74,"net":-111365.74}],"categories":[{"name":"Vat","value":667554.0},{"name":"สินเชื่อ","value":606431.98},{"name":"คชจ.ด่าน","value":151700.0},{"name":"ค่าบริหารจัดการ","value":95180.0},{"name":"ค่าขนส่ง","value":72270.0},{"name":"บัตรเครดิต","value":61822.52},{"name":"เงินลงทุน","value":50000.0},{"name":"น้ำ/ไฟ/เน็ต","value":44933.97},{"name":"วัสดุก่อสร้าง","value":40956.02},{"name":"ค่าแรงช่าง","value":26951.0},{"name":"ค่าชืปปิ้ง","value":26572.0},{"name":"เดินทาง","value":17000.0},{"name":"วัสดุสิ้นเปลือง","value":16833.0},{"name":"รปภ.","value":16401.58},{"name":"เงินเดือน 7-69","value":15000.0},{"name":"PN/ธรรมเนียม","value":14832.24},{"name":"ภาษีที่ดิน","value":10981.62},{"name":"งวดรถ","value":10640.0},{"name":"ปกส./กยศ","value":7852.0},{"name":"ค่าดูแล","value":5400.0},{"name":"ค่าโทรศัพท์","value":4022.25},{"name":"ทรัพย์สิน","value":3580.0},{"name":"อุปกรณ์ สนง.","value":2561.99},{"name":"ภงด.1-3-53-50","value":2432.76}]},{"id":"TKS","name":"หจก.ธนาอิมพอร์ต เอ็กซ์พอร์ต","revenue":3251955.49,"expense":2625302.59,"net":626652.9,"daily":[{"day":1,"revenue":0.0,"expense":68141.0,"net":-68141.0},{"day":2,"revenue":0.0,"expense":0.0,"net":0.0},{"day":3,"revenue":0.0,"expense":323811.0,"net":-323811.0},{"day":4,"revenue":0.0,"expense":6070.0,"net":-6070.0},{"day":5,"revenue":0.0,"expense":126287.0,"net":-126287.0},{"day":6,"revenue":0.0,"expense":4061.37,"net":-4061.37},{"day":7,"revenue":0.0,"expense":36468.0,"net":-36468.0},{"day":8,"revenue":0.0,"expense":63655.0,"net":-63655.0},{"day":9,"revenue":0.0,"expense":0.0,"net":0.0},{"day":10,"revenue":0.0,"expense":23025.0,"net":-23025.0},{"day":11,"revenue":0.0,"expense":53842.69,"net":-53842.69},{"day":12,"revenue":0.0,"expense":1610.0,"net":-1610.0},{"day":13,"revenue":0.0,"expense":592899.0,"net":-592899.0},{"day":14,"revenue":0.0,"expense":28244.0,"net":-28244.0},{"day":15,"revenue":3251955.49,"expense":28936.8,"net":3223018.69},{"day":16,"revenue":0.0,"expense":0.0,"net":0.0},{"day":17,"revenue":0.0,"expense":97577.79,"net":-97577.79},{"day":18,"revenue":0.0,"expense":7560.0,"net":-7560.0},{"day":19,"revenue":0.0,"expense":122925.0,"net":-122925.0},{"day":20,"revenue":0.0,"expense":80095.0,"net":-80095.0},{"day":21,"revenue":0.0,"expense":5838.19,"net":-5838.19},{"day":22,"revenue":0.0,"expense":158306.0,"net":-158306.0},{"day":23,"revenue":0.0,"expense":0.0,"net":0.0},{"day":24,"revenue":0.0,"expense":122541.0,"net":-122541.0},{"day":25,"revenue":0.0,"expense":63808.77,"net":-63808.77},{"day":26,"revenue":0.0,"expense":112206.0,"net":-112206.0},{"day":27,"revenue":0.0,"expense":22712.49,"net":-22712.49},{"day":28,"revenue":0.0,"expense":25793.14,"net":-25793.14},{"day":29,"revenue":0.0,"expense":70369.0,"net":-70369.0},{"day":30,"revenue":0.0,"expense":0.0,"net":0.0},{"day":31,"revenue":0.0,"expense":378519.35,"net":-378519.35}],"categories":[{"name":"สินเชื่อ","value":686720.19},{"name":"งวดรถ","value":547028.69},{"name":"VAT","value":515263.0},{"name":"PN/ธรรมเนียม","value":381203.55},{"name":"คชจ.ด่าน","value":151700.0},{"name":"ค่าบริหารจัดการ","value":95180.0},{"name":"บัตรเครดิต","value":81986.0},{"name":"ค่าขนส่ง-ในเครือ","value":69300.0},{"name":"เงินเดือน 7-69","value":39666.0},{"name":"ค่าชิปปิ้ง","value":25480.0},{"name":"เดินทาง","value":19000.0},{"name":"ค่าดูแล","value":3600.0},{"name":"ภงด.1-3-53-50","value":3319.79},{"name":"คชจ.ยานพาหนะ","value":3000.0},{"name":"ค่าไฟ/เน็ต/น้ำ","value":2355.37},{"name":"สิ้นเปลือง","value":500.0}]},{"id":"TLT","name":"บริษัท ธนาโลจิสติกส์ จำกัด","revenue":4864048.93,"expense":6880309.13,"net":-2016260.2,"daily":[{"day":1,"revenue":30150.0,"expense":1764235.35,"net":-1734085.35},{"day":2,"revenue":0.0,"expense":0.0,"net":0.0},{"day":3,"revenue":2485.0,"expense":48907.96,"net":-46422.96},{"day":4,"revenue":428.9,"expense":331712.61,"net":-331283.71},{"day":5,"revenue":0.0,"expense":348836.34,"net":-348836.34},{"day":6,"revenue":0.0,"expense":196558.58,"net":-196558.58},{"day":7,"revenue":0.0,"expense":270988.73,"net":-270988.73},{"day":8,"revenue":592.64,"expense":178388.62,"net":-177795.98},{"day":9,"revenue":0.0,"expense":0.0,"net":0.0},{"day":10,"revenue":0.0,"expense":135646.67,"net":-135646.67},{"day":11,"revenue":0.0,"expense":95859.4,"net":-95859.4},{"day":12,"revenue":0.0,"expense":325898.12,"net":-325898.12},{"day":13,"revenue":0.0,"expense":188137.74,"net":-188137.74},{"day":14,"revenue":763.0,"expense":244163.79,"net":-243400.79},{"day":15,"revenue":0.0,"expense":126955.73,"net":-126955.73},{"day":16,"revenue":0.0,"expense":0.0,"net":0.0},{"day":17,"revenue":0.0,"expense":91804.03,"net":-91804.03},{"day":18,"revenue":0.0,"expense":259555.69,"net":-259555.69},{"day":19,"revenue":0.0,"expense":163836.26,"net":-163836.26},{"day":20,"revenue":851.11,"expense":221403.48,"net":-220552.37},{"day":21,"revenue":0.0,"expense":52326.56,"net":-52326.56},{"day":22,"revenue":0.0,"expense":12211.38,"net":-12211.38},{"day":23,"revenue":0.0,"expense":0.0,"net":0.0},{"day":24,"revenue":0.0,"expense":106825.95,"net":-106825.95},{"day":25,"revenue":0.0,"expense":408055.15,"net":-408055.15},{"day":26,"revenue":59840.0,"expense":353915.45,"net":-294075.45},{"day":27,"revenue":0.0,"expense":171417.19,"net":-171417.19},{"day":28,"revenue":0.0,"expense":208750.0,"net":-208750.0},{"day":29,"revenue":4000.0,"expense":260425.17,"net":-256425.17},{"day":30,"revenue":0.0,"expense":0.0,"net":0.0},{"day":31,"revenue":4764938.28,"expense":313493.18,"net":4451445.1}],"categories":[{"name":"ค่าชิปปิ้งลาว","value":1923590.0},{"name":"เงินเดือน 7-69","value":1618448.06},{"name":"งวดรถ","value":726448.38},{"name":"รถร่วม","value":672314.0},{"name":"สินเชื่อ","value":400044.37},{"name":"สดย่อย","value":293245.74},{"name":"น้ำมัน/โฟคลิฟ","value":275972.25},{"name":"ค่าเช่า","value":143650.0},{"name":"ปกส./กยศ.","value":99836.16},{"name":"ลูกค้าโอนผิด","value":99110.65},{"name":"คชจ.ยานพาหนะ","value":98271.64},{"name":"ค่าแรงช่าง","value":77416.0},{"name":"ออนไลน์","value":52219.17},{"name":"บัตรเครดิต","value":50000.0},{"name":"เดินทาง","value":45204.83},{"name":"อุปกรณ์ สนง.","value":34840.95},{"name":"ไฟ/เน็ต/น้ำ/ขยะ","value":33117.89},{"name":"วัสดุสิ้นเปลือง","value":31750.03},{"name":"รปภ.","value":29440.84},{"name":"เหมาคัน","value":20846.0},{"name":"ที่ปรึกษา/ทำบัญชี","value":20000.0},{"name":"ค่าโฆษณา","value":19737.76},{"name":"ค่าโทรศัพท์","value":19565.89},{"name":"ค่าเที่ยว","value":15325.0},{"name":"ทรัพย์สิน","value":14475.85},{"name":"อัคคีภัย","value":14110.0},{"name":"ค่าขนส่ง/เครน","value":13860.0},{"name":"Human Soft","value":13375.44},{"name":"ภงด.1-3-53-50","value":13295.65},{"name":"ค่าซ่อมแซม","value":4246.58},{"name":"ตำรวจ","value":3100.0},{"name":"ชำรุด/นำกลับ","value":2410.0},{"name":"ค่าธรรมเนียม","value":1040.0}]}];
+let periodLabel = 'สิงหาคม 2569';
+let selected = 'all';
+const money = value => new Intl.NumberFormat('th-TH', {maximumFractionDigits:0}).format(Math.round(value));
+const money2 = value => new Intl.NumberFormat('th-TH', {minimumFractionDigits:2,maximumFractionDigits:2}).format(value);
+const pct = value => `${value.toFixed(1)}%`;
+const el = id => document.getElementById(id);
+function activeCompanies() { return selected === 'all' ? companies : companies.filter(c => c.id === selected); }
+function aggregate() {
+  const list = activeCompanies();
+  const dayCount = Math.max(1,...list.flatMap(c=>c.daily.map(d=>d.day)));
+  const days = Array.from({length:dayCount}, (_,i) => ({day:i+1,revenue:0,expense:0,net:0}));
+  const cat = new Map();
+  list.forEach(c => { c.daily.forEach(d => { const current=days[d.day-1]; if(current) { current.revenue += d.revenue; current.expense += d.expense; current.net += d.net; } }); c.categories.forEach(x => cat.set(x.name,(cat.get(x.name)||0)+x.value)); });
+  const revenue = list.reduce((s,c)=>s+c.revenue,0), expense = list.reduce((s,c)=>s+c.expense,0);
+  return { list, days, revenue, expense, net: revenue-expense, categories:[...cat.entries()].map(([name,value])=>({name,value})).sort((a,b)=>b.value-a.value) };
+}
+function selectedLabel() { return selected === 'all' ? 'ทุกบริษัท' : companies.find(c=>c.id===selected).name; }
+function renderFilters() { el('filters').innerHTML = `<button class="filter ${selected==='all'?'active':''}" data-id="all">ทุกบริษัท</button>` + companies.map(c=>`<button class="filter ${selected===c.id?'active':''}" data-id="${c.id}">${c.id}</button>`).join(''); el('filters').querySelectorAll('button').forEach(b=>b.onclick=()=>{selected=b.dataset.id;render();}); }
+function renderKpis(s) {
+  const net=Number.isFinite(s.net)?s.net:s.revenue-s.expense, margin=s.revenue ? net/s.revenue*100 : 0, netClass=net>=0?'up':'down';
+  el('revenue').textContent=money(s.revenue); el('expense').textContent=money(s.expense); el('net').textContent=(net>=0?'+':'')+money(net); el('net').className=netClass; el('margin').textContent=pct(margin); el('margin').className=netClass;
+  el('revenueNote').textContent=`${s.list.length} บริษัท`; el('expenseNote').textContent=`คิดเป็น ${pct(s.expense/s.revenue*100)} ของรายรับ`; el('netNote').textContent=net>=0?'กำไรสุทธิ':'ขาดทุนสุทธิ';
+}
+function renderProfitBars(s) { const shown=activeCompanies(), max=Math.max(...shown.map(c=>Math.abs(c.net)),1), single=shown.length===1, topRevenue=s.days.reduce((a,b)=>a.revenue>b.revenue?a:b), topExpense=s.days.reduce((a,b)=>a.expense>b.expense?a:b), worstNet=s.days.reduce((a,b)=>a.net<b.net?a:b); el('profitTitle').textContent=single?`กำไร / ขาดทุนสุทธิ · ${shown[0].id}`:'กำไร / ขาดทุนสุทธิรายบริษัท'; el('profitSub').textContent=single?`${shown[0].name} · แท่งสีเขียวคือกำไร สีแดงคือขาดทุน`:'แท่งสีเขียวคือกำไร สีแดงคือขาดทุน · คลิกเพื่อดูรายละเอียดบริษัท'; el('profitBars').innerHTML=shown.map(c=>{const positive=c.net>=0, width=Math.abs(c.net)/max*50; return `<button type="button" class="profit-row" data-id="${c.id}" aria-label="เลือก ${c.name}"><span class="profit-code">${c.id}</span><span class="net-track"><span class="net-zero"></span><span class="net-bar ${positive?'up':'down'}" style="width:${width}%"></span></span><span class="net-value ${positive?'up':'down'}">${positive?'+':''}${money(c.net)}</span></button>`;}).join(''); el('dailyMini').innerHTML=`<div class="daily-mini-item"><b>รายได้สูงสุด</b><span>วันที่ ${topRevenue.day} ส.ค.<br>${money(topRevenue.revenue)} บาท</span></div><div class="daily-mini-item"><b>ค่าใช้จ่ายสูงสุด</b><span>วันที่ ${topExpense.day} ส.ค.<br>${money(topExpense.expense)} บาท</span></div><div class="daily-mini-item"><b>ผลสุทธิต่ำสุด</b><span class="${worstNet.net<0?'down':'up'}">วันที่ ${worstNet.day} ส.ค.<br>${worstNet.net>=0?'+':''}${money(worstNet.net)} บาท</span></div>`; el('profitBars').querySelectorAll('button').forEach(row=>row.onclick=()=>{selected=row.dataset.id;render();window.scrollTo({top:0,behavior:'smooth'})}); }
+function renderBars(s) { const top=s.categories.slice(0,6), max=top[0]?.value||1; el('categorySub').textContent=`${selectedLabel()} · 6 รายการแรก`; el('bars').innerHTML=top.map((x,i)=>`<div><div class="bar-top"><span>${i+1}. ${x.name}</span><span>${money(x.value)}</span></div><div class="bar-track"><div class="bar" style="width:${x.value/max*100}%"></div></div></div>`).join(''); }
+function renderHighlights(s) { const topRevenue=s.days.reduce((a,b)=>a.revenue>b.revenue?a:b), topExpense=s.days.reduce((a,b)=>a.expense>b.expense?a:b), worstNet=s.days.reduce((a,b)=>a.net<b.net?a:b), averageExpense=s.expense/s.days.length, concentration=s.revenue?topRevenue.revenue/s.revenue*100:0, netClass=worstNet.net<0?'down':'up', advice=topExpense.expense>averageExpense*2?`วันที่ ${topExpense.day} ส.ค. มีค่าใช้จ่ายสูงกว่าค่าเฉลี่ยรายวันมาก ควรตรวจสอบรายการหลักและกำหนดผู้รับผิดชอบติดตาม`:`ติดตามค่าใช้จ่ายในวันที่ ${topExpense.day} ส.ค. ซึ่งเป็นวันที่ใช้จ่ายสูงสุด เพื่อยืนยันว่ารายการเกิดขึ้นตามแผน`; el('dailyTitle').textContent=`วิเคราะห์รายวัน · ${selected==='all'?'ทุกบริษัท':selected}`; el('dailySub').textContent=`${selectedLabel()} · ยอดรวมรายรับ ค่าใช้จ่าย และผลสุทธิในแต่ละวัน`; el('highlights').innerHTML=`<div class="highlight"><div class="badge blue">01</div><div><b>รายได้สูงสุด: วันที่ ${topRevenue.day} ส.ค.</b><span>${money(topRevenue.revenue)} บาท · คิดเป็น ${pct(concentration)} ของรายรับทั้งเดือน</span></div></div><div class="highlight"><div class="badge amber">02</div><div><b>ค่าใช้จ่ายสูงสุด: วันที่ ${topExpense.day} ส.ค.</b><span>${money(topExpense.expense)} บาท · ค่าเฉลี่ยรายวัน ${money(averageExpense)} บาท</span></div></div><div class="highlight"><div class="badge ${netClass==='up'?'purple':'blue'}">03</div><div><b>ผลสุทธิต่ำสุด: วันที่ ${worstNet.day} ส.ค.</b><span class="${netClass}">${worstNet.net>=0?'+':''}${money(worstNet.net)} บาท</span></div></div><div class="highlight recommend"><div class="badge purple">!</div><div><b>ข้อแนะนำ</b><span>${advice}</span></div></div>`; }
+function canvasColor(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function drawChart(s) {
+  const canvas=el('trend'), rect=canvas.getBoundingClientRect(), dpr=window.devicePixelRatio||1, ctx=canvas.getContext('2d'), dayCount=s.days.length; canvas.width=rect.width*dpr; canvas.height=rect.height*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); const w=rect.width,h=rect.height,p={l:52,r:18,t:18,b:36}; const values=s.days.flatMap(d=>[d.revenue,d.expense,d.net]); const max=Math.max(...values,1)*1.12; const min=Math.min(0,...values)*1.12; const x=i=>p.l+i*(w-p.l-p.r)/Math.max(dayCount-1,1), y=v=>p.t+(max-v)/(max-min)*(h-p.t-p.b); const text=canvasColor('--muted'), grid=canvasColor('--line');
+  ctx.clearRect(0,0,w,h); ctx.strokeStyle=grid; ctx.lineWidth=1; ctx.font='11px Inter, sans-serif'; ctx.fillStyle=text; ctx.textAlign='right';
+  for(let i=0;i<5;i++){ const v=max*i/4, yy=y(v); ctx.beginPath();ctx.moveTo(p.l,yy);ctx.lineTo(w-p.r,yy);ctx.stroke();ctx.fillText(money(v),p.l-8,yy+4); }
+  ctx.textAlign='center'; ctx.font='10px Inter, sans-serif'; s.days.forEach((_,i)=>ctx.fillText(i+1,x(i),h-12));
+  function trace(points){ctx.moveTo(...points[0]);for(let i=1;i<points.length-1;i++){const midX=(points[i][0]+points[i+1][0])/2,midY=(points[i][1]+points[i+1][1])/2;ctx.quadraticCurveTo(...points[i],midX,midY);}ctx.lineTo(...points[points.length-1]);}
+  function area(key,color){const points=s.days.map((d,i)=>[x(i),y(d[key])]), base=y(0), gradient=ctx.createLinearGradient(0,p.t,0,h-p.b);gradient.addColorStop(0,color+'55');gradient.addColorStop(1,color+'08');ctx.fillStyle=gradient;ctx.beginPath();trace(points);ctx.lineTo(points.at(-1)[0],base);ctx.lineTo(points[0][0],base);ctx.closePath();ctx.fill();}
+  function line(key,color){const points=s.days.map((d,i)=>[x(i),y(d[key])]);ctx.strokeStyle=color;ctx.lineWidth=2.7;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();trace(points);ctx.stroke();}
+  area('revenue',canvasColor('--blue')); area('expense',canvasColor('--red')); area('net',canvasColor('--green')); line('revenue',canvasColor('--blue')); line('expense',canvasColor('--red')); line('net',canvasColor('--green'));
+  canvas.onmousemove=e=>{const r=canvas.getBoundingClientRect(), i=Math.max(0,Math.min(dayCount-1,Math.round((e.clientX-r.left-p.l)/(r.width-p.l-p.r)*(dayCount-1)))), d=s.days[i], tip=el('tooltip'); tip.style.display='block';tip.style.left=Math.min(r.width-155,Math.max(5,e.clientX-r.left+12))+'px';tip.style.top=Math.max(4,e.clientY-r.top-75)+'px'; tip.innerHTML=`<b>วันที่ ${d.day} · ${periodLabel}</b><br>รายรับ: ${money2(d.revenue)}<br>ค่าใช้จ่าย: ${money2(d.expense)}<br><span style="color:${d.net>=0?'#70e0a8':'#ffadb5'}">สุทธิ: ${money2(d.net)}</span>`;}; canvas.onmouseleave=()=>el('tooltip').style.display='none';
+}
+function colIndex(ref) { let total=0; for(const letter of ref.replace(/\d/g,'')) total=total*26+letter.charCodeAt(0)-64; return total-1; }
+function cellText(cell, shared) { const type=cell.getAttribute('t'), inline=cell.getElementsByTagName('is')[0], raw=cell.getElementsByTagName('v')[0]?.textContent; if(type==='s') return shared[Number(raw)]||''; if(type==='inlineStr') return [...inline.getElementsByTagName('t')].map(node=>node.textContent).join(''); if(raw===undefined) return ''; const numeric=Number(raw); return Number.isFinite(numeric)?numeric:raw; }
+async function xmlFromZip(zip,path) { const entry=zip.file(path); if(!entry) throw new Error(`ไม่พบส่วนข้อมูล ${path}`); return new DOMParser().parseFromString(await entry.async('text'),'application/xml'); }
+async function parseMonthlyXlsx(file) {
+  if(!window.JSZip) throw new Error('ไม่พบตัวอ่านไฟล์ Excel');
+  const zip=await JSZip.loadAsync(file), sharedDoc=zip.file('xl/sharedStrings.xml')?await xmlFromZip(zip,'xl/sharedStrings.xml'):null;
+  const shared=sharedDoc?[...sharedDoc.getElementsByTagName('si')].map(item=>[...item.getElementsByTagName('t')].map(node=>node.textContent).join('')):[];
+  const workbook=await xmlFromZip(zip,'xl/workbook.xml'), rels=await xmlFromZip(zip,'xl/_rels/workbook.xml.rels'), relationMap=new Map([...rels.getElementsByTagName('Relationship')].map(item=>[item.getAttribute('Id'),item.getAttribute('Target')]));
+  const monthNames=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม']; let importedPeriod=''; const imported=[];
+  for(const sheet of [...workbook.getElementsByTagName('sheet')]) {
+    const relationId=sheet.getAttribute('r:id')||sheet.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships','id'), target=relationMap.get(relationId); if(!target) continue;
+    const sheetDoc=await xmlFromZip(zip,`xl/${target.replace(/^\.\//,'').replace(/^\//,'')}`), rows=[...sheetDoc.getElementsByTagName('row')].map(row=>{const values=[]; for(const cell of row.getElementsByTagName('c')) values[colIndex(cell.getAttribute('r'))]=cellText(cell,shared); return values;});
+    const header=rows.find(row=>row.some(value=>String(value).trim()==='ว.ด.ป.')&&row.some(value=>String(value).trim()==='รวมรายจ่าย')); if(!header) continue;
+    const revenueCol=header.findIndex(value=>String(value).trim()==='รวม'), expenseCol=header.findIndex(value=>String(value).trim()==='รวมรายจ่าย'); if(revenueCol<0||expenseCol<0) continue;
+    const daily=[], dataRows=[]; for(const row of rows) { const match=String(row[0]||'').trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/); if(!match) continue; const day=Number(match[1]), month=Number(match[2]), year=Number(match[3]); if(!importedPeriod) importedPeriod=`${monthNames[month-1]||month} ${String(year).length===2?2500+year:year}`; const revenue=Number(row[revenueCol])||0, expense=Number(row[expenseCol])||0; daily.push({day,revenue,expense,net:revenue-expense}); dataRows.push({day,values:row}); }
+    if(!daily.length) continue;
+    daily.sort((a,b)=>a.day-b.day); const categories=[]; for(let i=revenueCol+1;i<expenseCol;i++) { const value=dataRows.reduce((sum,item)=>sum+(Number(item.values[i])||0),0); if(value) categories.push({name:String(header[i]||'').trim(),value}); }
+    categories.sort((a,b)=>b.value-a.value); const revenue=daily.reduce((sum,item)=>sum+item.revenue,0), expense=daily.reduce((sum,item)=>sum+item.expense,0); imported.push({id:sheet.getAttribute('name'),name:String(rows[0]?.[0]||sheet.getAttribute('name')).trim(),revenue,expense,net:revenue-expense,daily,categories});
+  }
+  if(!imported.length) throw new Error('ไม่พบข้อมูลที่ตรงกับรูปแบบ monthly-template.xlsx');
+  return {companies:imported,period:importedPeriod||'เดือนใหม่'};
+}
+el('importFile').addEventListener('change',async event=>{ const file=event.target.files[0], status=el('importStatus'); if(!file) return; status.textContent='กำลังนำเข้าและคำนวณข้อมูล…'; try { const result=await parseMonthlyXlsx(file); companies=result.companies; periodLabel=result.period; selected='all'; render(); status.textContent=`นำเข้า ${file.name} สำเร็จ · ${companies.length} บริษัท`; } catch(error) { status.textContent=`นำเข้าไม่สำเร็จ: ${error.message}`; } finally { event.target.value=''; } });
+function render() { const s=aggregate(); el('periodHeadline').textContent=`สรุปผลประกอบการรายบริษัท ประจำเดือน${periodLabel}`; el('sourceInfo').textContent=`ข้อมูลจากรายรับ–รายจ่ายรายวัน · ${companies.length} บริษัท`; renderFilters(); renderKpis(s); renderProfitBars(s); renderBars(s); renderHighlights(s); el('trendSub').textContent=`${selectedLabel()} · เปรียบเทียบยอดรายวัน 1–${s.days.length} ${periodLabel}`; drawChart(s); }
+window.addEventListener('resize',()=>drawChart(aggregate())); render();
+</script>
+</body></html>
